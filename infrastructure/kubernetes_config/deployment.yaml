@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "hero-app-web"
+  namespace: "hero-namespace"
+  labels:
+    app: "hero-app"
+    name: "hero-app-web"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "hero-app"
+      name: "hero-app-web"
+  template:
+    metadata:
+      labels:
+        app: "hero-app"
+        name: "hero-app-web"
+    spec:
+      containers:
+        - name: "hero-app"
+          image: "eu.gcr.io/hero-app-351218/hero-app"
+          imagePullPolicy: "Always"
+          command: ["hero-app"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 80
